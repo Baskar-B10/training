@@ -1,0 +1,840 @@
+Time Complexity: describes how the time (execution duration) of an algorithm increases as the size of the input (n) increases.
+Big-O	Description	Example
+O(1)	Constant time	Accessing arr[0]
+O(log n)	Logarithmic	Binary Search
+O(n)	Linear	Loop through array
+O(n log n)	Linearithmic	Merge Sort, Quick Sort (avg)
+O(n²)	Quadratic	Nested loops (bubble sort)
+O(2ⁿ)	Exponential (bad)	Recursive Fibonacci
+O(n!)	Factorial (very bad)	Permutations (brute force)
+
+Space Complexity = How much extra memory your algorithm uses (not counting input size).If the input is an array of size n, that memory doesn’t count toward space complexity — it's given to you. Only extra memory you allocate in addition to that is counted.
+O(2), O(5), O(1000) → all treated as O(1)
+
+Array - collections of elements stored in contiguous memory. Each elements accessed by index.
+
+One-dimensional and multi-dimensional arrays
+real life usage : students attendance , temp reading , players scores, bus seat num, daily sales.
+
+why array over other DSA:
+
+if in case of linear or sequential order array is easier as we can fetch the details by index.
+
+int[] arr= new int[5]; arr[0]=10; arr[1]=2;
+
+Time Complexities:
+
+access -> o(1) - easily accessible by index value.
+insertion -> O(n) - if need to insert at any index then O(n) as we need to copy the array into another array then iterate till position needs to insert and then  shift all elements to next index for element after position. finally add the element in the corresponding position.
+Deletion -> O(n) - if need to delete at any index then O(n) as we need to copy the array into another array then iterate till position needs to delete and then  shift all elements to previous index for element after position.
+in above case O(1) application if its at end of array , for beginning its O(n) - worst case at beginning.
+linear search - O(n) - iterate with all elements
+Binary search - O(log n ) - for sorted array , search for an element in a sorted array by repeatedly dividing the search range in half.
+If the target is smaller → search left half.
+If the target is larger → search right half.
+
+step 0, search n elements 
+step 1, search n/2 elements 
+step 2, search n/4 elements
+step k, search n/2 power K elements , as we go each step, we reduce half element then before in search.
+
+so 
+n / (2^k) = 1
+=> 2^k = n
+=> k = log₂(n)
+
+Space Complexity:
+access ->  O(1), read just one value
+Insertion -> O(1) You shift elements inside the existing array without creating new arrays or structures; no extra memory needed except a few variables.If you need to resize the array (create a bigger array and copy), then space complexity can be O(n) temporarily due to copying.
+Deletion ->O(1)
+Search-> O(1) need a few variables for pointers or indices to keep track of your current position.
+
+Operation	Time Complexity	Space Complexity
+Access	O(1)	O(1)
+Update	O(1)	O(1)
+Traversal	O(n)	O(1)
+Insertion	O(n) (worst case)	O(1)
+Deletion	O(n) (worst case)	O(1)
+Search	O(n) or O(log n)	O(1)
+
+Traversal:
+for (int i=0; i< arr.length; i++){
+ System.out.println(arr[i]);
+}
+for (int i = arr.length - 1; i >= 0; i--) {
+    System.out.print(arr[i] + " ");
+}
+
+here last index position always length of array - 1 since index starts at 0.
+
+so forward traversal , its 0 to last index position i.e  0 to < array length or =length-1
+so reverse traversal , its  last index position to 0  i.e   length-1 to 0
+
+
+Important Patterns and Techniques:
+
+1. sliding window - mostly used for sub array concepts.
+
+real life example - 
+1. Monitoring Network Traffic
+2.Fitness Tracker (Moving Average over Time)
+3.Video Surveillance (Motion Detection)
+4.Music Playlist (Recent Tracks Played)
+5.Step Counter App (Moving Average Speed)
+6.E-Commerce Sales Tracking
+
+screen tabs that sildes over while swipe up and down in mobile and browser
+
+why we use sliding window than other:
+
+In  a linear /sequential flow , want to take few set of elements and do operation like max, min , sum , avg , view. since it will provides N elements and we can remove previous and add next one.
+
+pseudocode:
+maxSum- find the maximum sum value of K elements i.e if there is an 7 elements in array {1, 4, 2, 10, 2, 3, 1}, find maximum sum of 3 elements in array.
+
+1. add first 3(k) elements and put it as max value. 1+4+2 = 7
+2. iterate from 4th elements  (k). iterate from 10 to 1
+3. for each element remove the old element like 1st element in array and add the next element in array. //sliding process 
+a) remove 1st element i.e 1, and add next element i.e 10 so sum = 4+2+10 =14
+b) remove 1st element i.e 4, and add next element i.e 2 so sum = 2+10+2 =14
+c) remove 1st element i.e 2, and add next element i.e 3 so sum = 10+2+3 =15
+d) remove 1st element i.e 10, and add next element i.e 1 so sum = 2+3+1 =6
+4. compare the element with max value and update the max value.
+in above iteration , compare with max value and update the max value as 15 (max of 7, 14,14,15,6 is 15)
+
+
+int maxSum(int[] arr, int k) {
+        int sum = 0, max = 0;
+        for (int i = 0; i < k; i++) sum += arr[i];
+        max = sum;
+        for (int i = k; i < arr.length; i++) {
+            sum += arr[i] - arr[i - k];
+            max = Math.max(max, sum);
+        }
+        return max;
+    }
+
+here, first iterate the K elements and add the sum of it 
+after that , move to next element , remove the first element, find the sum , compare with previous sum.
+keep on going till last iterate and find the max of sub array sum.
+
+int[] arr = {1, 4, 2, 10, 2, 3, 1};
+int k = 3;
+then first take 1,4,2 and add it to sum 
+then take 4,2,10 then add it to sum and remove 1
+then take 2,10,2 then add it  to sum and remove 4
+then take 10, 2, 3 then add it  to sum and remove 2
+then take  2, 3, 1 then add it  to sum and remove 10.
+ take max of each sum to find the maximum of sum of sub array.
+
+2. Two Pointers Technique
+
+often from opposite ends or with some condition-based movement.
+To reduce time complexity from O(n²) to O(n) in many problems.
+Avoid nested loops by smartly navigating the array.
+Efficient for sorted arrays, linked lists, and strings.
+
+different ways:
+1. front and end - Reading from Both Ends of a Book,Two Luggage Scanners at an Airport Conveyor Belt
+2. fast and slow -Fast & Slow Runner on a Circular Track
+3. next to next -Watching Two Video Streams in Sync (next/previous button)
+
+Finding a Pair with a Given Sum in a Sorted Array
+pseudocode:
+HasPair- in given array {1, 2,3,5,7,8,9}, find sum of a pair=15
+we can go for 2 loop to add 2 elements and form the target but it takes time, so go with 2 pointer
+
+1. take 2 points left from beginning(1) and right from end (9). Here sum should be 15
+2. here array is sorted so addition of 2 num should be increasing in forward direction and decreasing in backward direction
+3. we add first and last element , (1+9=10) 
+	a) if output matches then return 
+	b) if output is less then sum , we need to increase so move the left value to next
+	c) if output is greater, then reduce so move the right to previous value 
+
+initially,		 left =1, right=9 so sum= 1+9 = 10 < 15
+move left to 2		 left =2, right=9 so sum =2+9= 11 <15
+move left to 3 		 left=3, right=9 so sum =3+9 = 12 <15
+move left to 5		 left =5 , right =9 sum = 5+9 = 14 <15
+move left to 7 		 left= 7 , right =9 sum =7+9 =16 >15
+move right to 8		 left =7 , right =8 sum 7+8 =15 return true;
+
+4. here it should not go beyond loop , loop should terminate so left should be less than right since we already covered that values. 
+
+ 
+boolean hasPair(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == target) return true;
+        if (sum < target) left++;
+        else right--;
+    }
+    return false;
+}
+Reversing an Array or String
+int left = 0, right = arr.length - 1;
+while (left < right) {
+    swap(arr, left, right);
+    left++;
+    right--;
+}
+Remove Duplicates from Sorted Array
+int i = 0;
+for (int j = 1; j < arr.length; j++) {
+    if (arr[i] != arr[j]) {
+        i++;
+        arr[i] = arr[j];
+    }
+}
+Moving Zeros to End / Partitioning
+int left = 0;
+for (int right = 0; right < arr.length; right++) {
+    if (arr[right] != 0) {
+        swap(arr, left++, right);
+    }
+}
+
+Time Complexity-Often O(n) as we iterate the full array
+Space Complexity O(1) only few variables no need new array 
+
+Multi-Dimensional Array
+
+real life example :
+	1. image pixels
+	2. Calendar
+	3. seating arrangement rows/columns
+	4. spreadsheet
+	5. maps and grid
+	6. chess board
+
+int[][] matrix = new int[3][4];           // 3 rows, 4 columns
+int[][] grid = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+Operation	Time Complexity
+Access	O(1)
+Traversal	O(n × m)
+Search (brute)	O(n × m)
+Search (sorted row+col)	O(n + m)
+Matrix Multiplication	O(n³) (basic)
+
+DFS (Depth-First Search)
+Start at a cell, Visit all connected neighbors and Use recursion or a stack.
+Use DFS to start from one node and visit all reachable nodes.
+
+real life case:
+1.Navigating a Maze or Puzzle
+2.Social Network Analysis like Facebook/linkedin to find connection
+3.File System Search (search files in sub folder and move to next folder)
+4.Solving Sudoku or Similar Games
+5.Network Connectivity & Pathfinding
+
+why we use than other:
+in case any group related to one node or node have have some child nodes, we can go recursively and backtracking it in depth.
+mostly go like a path starts from one place and related to it and end at end.
+
+Flood Fill- Starting from a pixel(1,1), replace all connected pixels of the same color (1) with a new color(2).
+connected places means it can go up , down , right and left. if any barrier in going then it will not change
+
+pseudocode:
+start from one place , and replace the value to "2" if its "1".
+from that place go to down if its match then change it else move to up /right/left.
+until it finds other value, keeps going on and once find return back
+here it should go up, down , left , right depends on blockage or not. 
+
+
+if (oldColor == newColor) return image; //// avoid infinite loop only if new colour = old color =1
+
+int[][] image = {
+                {1, 1, 1},
+                {1, 1, 0},
+                {1, 0, 1}
+        };
+int sr = 1, sc = 1;  // Start at (1, 1)
+        int newColor = 2;
+        int[][] output= floodFill(image,sr,sc,newColor);
+
+public static int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int oldColor = image[sr][sc];
+        if (oldColor == newColor) return image; // avoid infinite loop
+
+        dfs(image, sr, sc, oldColor, newColor);
+        return image;
+    }
+
+    static void dfs(int[][] image, int i, int j, int oldColor, int newColor) {
+        if (i < 0 || j < 0 || i >= image.length || j >= image[0].length || image[i][j] != oldColor)
+            return;
+
+        image[i][j] = newColor;
+
+        dfs(image, i+1, j, oldColor, newColor); // down
+        dfs(image, i-1, j, oldColor, newColor); // up
+        dfs(image, i, j+1, oldColor, newColor); // right
+        dfs(image, i, j-1, oldColor, newColor); // left
+    }
+
+output:
+[
+ [2, 2, 2],
+ [2, 2, 0],
+ [2, 0, 1]
+] here (1,2) and (2,1) have 0 barrier so (2,2) cant be filled to new color
+
+
+pseudocode:
+1. iterate rows from array and each element in the row (column)
+2. if its match with 1 then mark it as 0 and count to find size or count 
+3. using dfs find the near by rows and columns using up, down right and left algorithm and mark all '1' as '0' until it find blockage '0'.
+4. repeat the same for next element and next row.
+5. add condition for out of bounds like row /column index not  less than 0 and greater than size of length . also which is not '1'. 
+Number of Islands
+2D grid of '1' (land) and '0' (water), count how many islands (connected 1s) exist.
+
+ char[][] grid = {
+                {'1','1','0','0','0'},
+                {'1','1','0','0','0'},
+                {'0','0','1','0','0'},
+                {'0','0','0','1','1'}
+        };
+       System.out.println(numIslands(grid));
+
+public static int numIslands(char[][] grid) {
+        int count = 0;
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    count++;
+                    dfs(grid, i, j);  // sink the island
+                }
+            }
+        }
+        return count;
+    }
+
+    static void dfs(char[][] grid, int i, int j) {
+        if (i < 0 || j < 0 || i >= grid.length || j >= grid[0].length || grid[i][j] != '1')
+            return;
+
+        grid[i][j] = '0';  // mark as visited
+
+        dfs(grid, i+1, j);
+        dfs(grid, i-1, j);
+        dfs(grid, i, j+1);
+        dfs(grid, i, j-1);
+    }
+
+(0,0) = '1' → Island Found
+
+count = 1
+
+Call dfs(0, 0)
+
+This DFS explores and marks the entire top-left island
+
+DFS Visits:
+
+(0,0) → mark as '0'
+
+(1,0) → mark as '0'
+
+(1,1) → mark as '0'
+
+(0,1) → mark as '0'
+
+here Call dfs(0, 0)
+Mark (0,0) as '0'
+Call DFS on neighbors:
+
+dfs(1, 0)
+Mark (1,0) as '0'
+Call DFS on neighbors:
+
+dfs(2, 0) → '0' (water) → return
+
+dfs(0, 0) → already '0' → return
+
+dfs(1, 1)
+Mark (1,1) as '0'
+Call DFS neighbors:
+
+dfs(2, 1) → '0' → return
+
+dfs(0, 1)
+Mark (0,1) as '0'
+Call DFS neighbors:
+
+dfs(1, 1) → already '0' → return
+
+dfs(-1, 1) → out of bounds → return
+
+dfs(0, 2) → '0' → return
+
+dfs(0, 0) → already '0' → return
+
+dfs(1, 2) → '0' → return
+
+dfs(1, 0) → already '0' → return
+
+dfs(1, -1) → out of bounds → return
+
+dfs(-1, 0) → out of bounds → return
+
+dfs(0, 1) → already '0' → return
+
+dfs(0, -1) → out of bounds → return
+
+No other connected '1's → DFS ends.
+
+Grid now looks like:
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+[  0   0   1   0   0 ]
+[  0   0   0   1   1 ]
+
+🔸 (0,1) → Already '0' → Skip
+🔸 (0,2), (0,3), (0,4) → '0' → Skip
+🔸 (1,0), (1,1) → Already visited → Skip
+🔸 (1,2), (1,3), (1,4) → '0' → Skip
+🔸 (2,2) = '1' → New Island
+
+count = 2
+
+Call dfs(2,2)
+
+(2,2) → mark as '0'
+
+No connected '1's → DFS ends.
+
+Grid:
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+[  0   0   0   1   1 ]
+
+🔸 (3,3) = '1' → New Island
+
+count = 3
+
+Call dfs(3,3)
+
+DFS visits:
+
+(3,3) → mark as '0'
+
+(3,4) → mark as '0'
+
+No other connected '1's → DFS ends
+
+Final Grid:
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+[  0   0   0   0   0 ]
+
+🔸 Rest of the cells → All 0 → Skip
+✅ Final count = 3
+
+public int maxAreaOfIsland(int[][] grid) {
+    int maxArea = 0;
+
+    for (int i = 0; i < grid.length; i++) {
+        for (int j = 0; j < grid[0].length; j++) {
+            if (grid[i][j] == 1) {
+                int area = dfs(grid, i, j);
+                maxArea = Math.max(maxArea, area);
+            }
+        }
+    }
+
+    return maxArea;
+}
+
+private int dfs(int[][] grid, int i, int j) {
+    // Base case: out of bounds or not land
+    if (i < 0 || j < 0 || i >= grid.length || j >= grid[0].length || grid[i][j] == 0) {
+        return 0;
+    }
+
+    // Mark this cell as visited
+    grid[i][j] = 0;
+
+    // Each land cell counts as 1
+    int area = 1;
+
+    // Explore all 4 directions
+    area += dfs(grid, i + 1, j);
+    area += dfs(grid, i - 1, j);
+    area += dfs(grid, i, j + 1);
+    area += dfs(grid, i, j - 1);
+
+    return area;
+}
+
+
+import java.util.*;
+
+public class IslandSizes {
+
+    public static void main(String[] args) {
+        char[][] grid = {
+            {'1','1','0','0','0'},
+            {'1','1','0','0','0'},
+            {'0','0','1','0','0'},
+            {'0','0','0','1','1'}
+        };
+
+        List<Integer> islandSizes = countIslandSizes(grid);
+        System.out.println("Island Sizes: " + islandSizes);
+    }
+
+    public static List<Integer> countIslandSizes(char[][] grid) {
+        List<Integer> sizes = new ArrayList<>();
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    int size = dfs(grid, i, j);
+                    sizes.add(size);
+                }
+            }
+        }
+
+        return sizes;
+    }
+
+    static int dfs(char[][] grid, int i, int j) {
+        if (i < 0 || j < 0 || i >= grid.length || j >= grid[0].length || grid[i][j] != '1') {
+            return 0;
+        }
+
+        grid[i][j] = '0'; // mark as visited
+
+        int count = 1; // current cell
+
+        // explore all 4 directions
+        count += dfs(grid, i + 1, j); // down
+        count += dfs(grid, i - 1, j); // up
+        count += dfs(grid, i, j + 1); // right
+        count += dfs(grid, i, j - 1); // left
+
+        return count;
+    }
+}
+
+BFS is a layer-by-layer or level-by-level traversal technique.
+
+In a 2D grid (like a matrix or map), BFS is used to explore all neighboring cells from a starting point before going deeper.
+steps:
+Use a queue to keep track of positions to explore next.
+Start at a cell.
+Add its valid neighbors (up, down, left, right) to the queue.
+Continue exploring neighbors of the front of the queue.
+Stop when the queue is empty.
+
+real life case:
+1.Shortest Path in Maps / Navigation Systems
+2.Social Networks — Finding Degrees of Connection
+3.Broadcasting Messages in Networks
+4.Medical Spread Simulation (Epidemiology)
+5.Recommendation Systems like suggested videos or people you may know
+
+why ?
+
+if in case need to find shortest path in algorithm , use this , becoz in a matrix from starting to end , we can go forward using down and right direction.
+using that we can find shortest either its a right or down in 2D 
+
+In 1D, its a forward path with previous condition know like climbing the stairs/ fibonci series , with current value find next value.
+
+
+Fibonacci Sequence
+fib(0) = 0  
+fib(1) = 1  
+fib(n) = fib(n - 1) + fib(n - 2)
+
+Climbing Stairs
+
+step n - 1 (with a 1-step jump), or
+step n - 2 (with a 2-step jump)
+
+ways(1) = 1  // only one way: [1]
+ways(2) = 2  // two ways: [1,1] and [2]
+ways(n) = ways(n-1) + ways(n-2)
+
+So ways(n) = fib(n + 1) ways(0) not there fib(0)=1
+
+int climbStairs(int n) {
+    if (n <= 2) return n;
+
+    int[] dp = new int[n + 1];
+    dp[1] = 1; // 1 way to climb 1 step
+    dp[2] = 2; // 2 ways to climb 2 steps
+
+    for (int i = 3; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+
+    return dp[n];
+}
+
+Unique Paths in Grid (2D)
+in a grid , find shortest path to reach from place A to B. it can go either right or down 
+1. fill the row values of 1st iteration like 1 2 3 as 1, 1+2=3 , 3+3 =6 (1,2,3 as 1,3,6)
+2. fill the column values of 1st iteration like 1 2 3 as 1, 1+2=3 , 3+3 =6 (1,2,3 as 1,3,6)
+3. go next inner block , do same current value = add previous +current value. here previous value should be min to find shortest path compare between top and left value.
+4. end  B will have value from A to get shortest path
+
+int uniquePaths(int m, int n) {
+    int[][] dp = new int[m][n];
+
+    // First row and first column are 1 (only 1 way to reach those cells)
+    for (int i = 0; i < m; i++) dp[i][0] = 1;
+    for (int j = 0; j < n; j++) dp[0][j] = 1;
+
+    // Fill the rest
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = dp[i-1][j] + dp[i][j-1];
+        }
+    }
+
+    return dp[m-1][n-1];
+}
+
+You’re given a grid with m rows and n columns. You start at the top-left cell (0,0) and want to reach the bottom-right cell (m-1,n-1).
+
+You can only move:
+
+👉 right (→)
+
+👇 down (↓)
+
+Your task: Count how many unique paths you can take to reach the end.
+dp[i][j] = dp[i-1][j] + dp[i][j-1]; (adding tup and left value)
+Because any path that reaches the top neighbor can just take one down move to reach you.
+And any path that reaches the left neighbor can take one right move to reach you.
+
+
+minimum cost path
+
+int minPathSum(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    int[][] dp = new int[m][n];
+
+    dp[0][0] = grid[0][0];
+
+    // Fill first row
+    for (int j = 1; j < n; j++) {
+        dp[0][j] = dp[0][j-1] + grid[0][j];
+    }
+
+    // Fill first column
+    for (int i = 1; i < m; i++) {
+        dp[i][0] = dp[i-1][0] + grid[i][0];
+    }
+
+    // Fill rest
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = grid[i][j] + Math.min(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+
+    return dp[m-1][n-1];
+}
+we can move down or right from top-left. so we might go on towards left or towards down so add all those with previous step
+after that inner cell, take the min cost and go to that.
+
+
+Prefix Sum / Cumulative Sum
+
+real life:
+Bank Statements / Monthly Expenses
+E-commerce: Sales Between Dates
+Stock Market Data
+Calorie or Nutrition Trackers
+Survey Results / Progress Bars
+
+why:
+in case want to research  between different points , we can add cumulative between before range and current value and store it ,like bank statement between 10 day to 20 day , get the cumulative value instead of iteration.
+Fibonacci is a mathematical sequence with a recursive formula.
+Prefix Sum is a programming technique used to optimize calculations over arrays (especially range sums).
+pseuocode:
+1.make new array copy of array given with same leneth.
+2. first element going to same in both so map it.
+3. iterate from 2nd element add with previous value in the prfiex suma nd store it in prefix.
+
+here, prefix sum at nth position will have sum of all num in array till n.
+
+
+int[] arr = {1, 2, 3, 4, 5};
+int[] prefixSum = new int[arr.length];
+
+// Build prefix sum array
+prefixSum[0] = arr[0];
+for (int i = 1; i < arr.length; i++) {
+    prefixSum[i] = prefixSum[i - 1] + arr[i];
+}
+
+// Query sum from L to R (e.g., 1 to 3)
+int L = 1, R = 3;
+int sum = prefixSum[R] - (L == 0 ? 0 : prefixSum[L - 1]);
+System.out.println(sum);  // Output: 9 (2 + 3 + 4)
+
+here adds between L and R in the array 
+
+Sorting & Searching
+
+real life:
+Contacts app
+E-commerce filters (price low → high)
+Gallery, music search, folder search
+News feed, bank details, booking any search 
+
+why:
+easier to compare if a data is sorted order and easily we can pickup 
+
+psducode:
+
+similar to 2 point technique , left and right  keep increase /decrease based on target value.
+
+int[] arr = {1, 3, 5, 7, 9};
+int target = 5;
+
+int left = 0, right = arr.length - 1;
+boolean found = false;
+
+while (left <= right) {
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) {
+        found = true;
+        break;
+    } else if (arr[mid] < target) {
+        left = mid + 1;
+    } else {
+        right = mid - 1;
+    }
+}
+
+System.out.println(found);  // true
+
+sort the array and then search the num using binary search 
+
+Greedy Algorithms - to find the non overloop elements count 
+
+real life:
+
+1. Coin change (currency system)
+2. Activity/Meeting scheduling
+3. Internet bandwidth allocation
+4.Battery optimization
+
+why:
+
+in order to find the  non overloop elements details, optimal substructure and quick decision
+
+pseucode:
+
+1. sort the end element in each array 
+2. set the end value as first element end value.
+3. iterate each element from 2nd element and check start element is greater than end.
+	a) if yes, count the value and change end to current element end
+	b) else repeat above
+4. repeat above steps and get the count of non overlap elements.
+
+int[][] intervals = {{1,3}, {2,4}, {3,5}};
+Arrays.sort(intervals, (a, b) -> a[1] - b[1]); --> sort by end value 3,4,5 so (1,3) , (2,4) , (3,5) 
+
+int count = 1;  // select first interval 
+int end = intervals[0][1]; // here its 3 end value of first interval
+
+for (int i = 1; i < intervals.length; i++) { iterate rest values 
+    if (intervals[i][0] >= end) { check the 1st value in each element greater or equal with end , then increase the count and change the end to end value of the particular element
+        count++;
+        end = intervals[i][1];
+    }
+}
+
+System.out.println(count);  // Output: 2
+
+here why we are matching with end with other loop so if 1,3 starts at 1 and ends at 3 . 2,4 is lies between it so element should be outer the 3 and keep move on.
+
+
+Bit Manipulation
+
+real life:
+
+Permissions in OS (Unix/Linux) file persiommion
+Compression
+Finding unique number
+Cryptography & hashing
+
+XOR with num gives same num or zero. so we can get uniqueness in array.
+
+1. set r=0
+2. iterate each element and xor with r make r=r xor element
+3. if  r=0 , then 0 ^ value= value so  the r=value.
+4. if value = x and r=x, then x^x=0 so r=0.
+5. it will remove duplicate element and give unique value.
+
+int[] arr = {2, 3, 2, 4, 4};
+int result = 0;
+for (int num : arr) {
+    result ^= num;  // XOR operation
+}
+System.out.println(result);  // Output: 3
+
+XORing a number with itself cancels out to 0, so XORing all elements leaves the unique number.
+Start: result = 0
+
+result ^= 2 → 0 ^ 2 = 2
+
+result ^= 3 → 2 ^ 3 = 1 (because in binary: 10 ^ 11 = 01)
+
+result ^= 2 → 1 ^ 2 = 3 (01 ^ 10 = 11)
+
+result ^= 4 → 3 ^ 4 = 7 (011 ^ 100 = 111)
+
+result ^= 4 → 7 ^ 4 = 3 (111 ^ 100 = 011)
+x ^ x = 0
+XOR of a number with itself is 0.
+
+x ^ 0 = x
+XOR of a number with 0 is the number itself.
+
+XOR is commutative and associative — order doesn’t matter.
+
+
+mergesort: stable, divide-and-conquer sorting algorithm with guaranteed
+
+real life:
+
+1. Sorting large files (external sort)
+2. Merging sorted logs/data streams
+3. Patient record merging
+4. E-commerce order processing
+5. Big data frameworks (Hadoop, Spark)
+6. Multi-threaded sort
+
+why
+ in case of large data , we can use merge sort , divide the elements and sort it 
+void mergeSort(int[] arr, int left, int right) {
+    if (left >= right) return;
+
+    int mid = left + (right - left) / 2;
+    mergeSort(arr, left, mid);
+    mergeSort(arr, mid + 1, right);
+    merge(arr, left, mid, right);
+}
+
+void merge(int[] arr, int left, int mid, int right) {
+    // Merge two sorted halves arr[left..mid] and arr[mid+1..right]
+    // (Implementation omitted for brevity)
+}
+
+
+
