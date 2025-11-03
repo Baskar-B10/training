@@ -1,0 +1,496 @@
+Devops - CI/CD
+
+SDLC - planning, coding, building and testing
+
+waterfall model 
+linear /sequential phase.
+requirement gathering-> analysis ->design ->coding->testing-> production ->maintenance
+
+if any requirement comes in between , need to start from beginning phase -Major disadvantage.
+
+agile model
+provide software in shorter period of time.
+if any requirement comes no need to go to initial phase. we can adapt in SDLC.
+
+Agile we have Kanban model, Scrum model
+
+Devops:
+culture of development and maintenance the software. mostly automate the process.
+continuous life cycle no end point like Infinite shape.
+Development group and operational group (deploy the app in server).'
+
+devops is combo of development and operation. more collaboration between development and operation.
+
+diff btw agile and devops:
+agile only cares on development , devops takes care both development and operation.
+
+agile no automation, devops automation is there.
+
+agile - client provide feedback . devops tool will provide.
+
+stages of devOps:
+plan design code build integrate Test release and deploy
+CI: Develop → Build → Test
+C Delivery: Test → Release → Deploy (Staging/Pre-Prod)
+C deployment: Release → Deploy (Production)
+C Development :plan→ design→ code
+tools:
+scm tools - source code management like git
+build-maven 
+Jira 
+Kubernetes
+selenium Junit
+Jenkins
+
+
+Version control system :
+
+source code keeps on changing , we cant revert back easily with older version. so we need version control system.
+
+
+Types: 
+1.centralized (every developer works on same repo) commit and checkout the code by each developer. its network related.
+2.Distributed (every developer have local copy of code) pull and push the code.eg: git hub
+
+GIT: Global information tracker.
+its distributed version tool. all operation can done in locally. no remote or local repo.
+Git is tool to do operation locally . GitHub is remote repo that can be used in ci/cd, shares to other.
+
+
+architecture:
+	         git add	git commit	 git push/clone/pull
+
+working directory ----->staging area------->local repo------->remote repo
+
+
+
+git init- initially working directory
+git status -gives status of stages
+git add . - add all files , move to staging area (transition from not in git track to git track)
+git commit -m "first" - commit the files to local repo.
+git log - will provide git commit id, author , comments and time details.
+git diff  <commitid1><commitid2> gives diff between 2 commits.
+git push - push code to remote repo
+git branch - gives which branch currently
+git branch <branch name> - create new branch
+git checkout <branch name> - point to branch name
+git merge - merge changes from one branch to other.
+Master- head refer to master means any changes we might committed.
+
+head -> master , origin/master - code is up to master and local repo 
+
+branching - create new branch from master /other branch. making different branch from master.
+
+https://k21academy.com/amazon-web-services/aws-solutions-architect/how-to-create-ubuntu-virtual-machine-in-aws/
+
+https://education.github.com/git-cheat-sheet-education.pdf
+
+GitLab- devops platform , integrated with many tools like testing
+
+https://gitlab.com/-/trial_registrations/new?glm_source=about.gitlab.com/&glm_content=default-saas-trial
+
+https://gitlab.com/baskar_r-group/Baskar_R-project/-/get_started
+
+
+devsecops - security parameter include in every devOps.
+GitLab is devSecOps
+plan, create, package, release , monitor, verify , secure, configure, protect and manage in GitLab.
+Planning - product manger . designer. create Epics, milestones, issues
+developers - code they will work
+security team - in force security in code
+operation - monitoring and incident management
+
+https://docs.gitlab.com/ci/quick_start/
+
+put code in git lab:
+git clone from git lab repo
+login with username and password
+add changes and commit it.
+
+track jira:
+planning -> new issues similar to jira
+create merge request 
+create issue add change in git and we can close the issue
+
+Pipeline: CI/CD
+
+.gitlab-ci.yml should be created inside the project 
+set of instruction needs to executed in pipeline.
+its acts as brain in pipeline.
+
+GitLab runner- going to execute the job based on GitLab yml file.
+stages: -build deploy ,test
+available inside settings->runner
+
+https://docs.gitlab.com/ci/quick_start/tutorial/
+
+Docker & containerization:
+
+
+To deploy application in Vm or container.
+
+docker software - part of container.
+
+java service requires open Jdk lib , sql Db requires SQL lib, messaging or orchestration requires some dependency. every service require some dependency or libraries to run. 
+
+each service deploy in each VM which have either windows or Linux as OS and OS require some memory and CPU and license.
+but application needs only few memory and cpu , but VM requires some more memory.
+
+limitation of apps in VM:
+maintain multiple VM
+extra resource management
+manage multiple license 
+VM os restart time more if complex enterprise services.
+
+containerization - each service run with its dependency/library  in single VM with help of docker. no separate VM for each service like java, sql ,messaging.
+
+so resource is less , no need to maintain multiple VMs and no need to maintain multiple license.
+
+each apps run as container . docker is company created software docker which run container.
+
+docker communicates between apps and Os.
+each service isolated unless we made the connection. resource will be provided by docker software.
+
+no multiple OS so bootup time, memory utilization is better.
+
+
+ISO image - used by docker software.
+
+steps to install docker
+https://docs.docker.com/engine/install/ubuntu/
+
+docker --version - get version of docker
+docker pull nginx - download nginx
+ docker images - display docker images 
+docker run -d -p <container port>:<vm port> nginx container port to connect vm port to run the nginx
+-d - detached mode 
+we can access only vm port , not container port so we need to provide -p <container port>:<vm port> 
+
+docker ps - gives docker container
+
+docker pull httpd - pull the httpd from net similar to nginx.
+
+
+docker file is simple ASCII file. every service require docker file.
+instruction create image:
+
+create VM ubuntu
+
+https://docs.docker.com/engine/install/ubuntu/
+
+steps: setup git sample project and build docker file and run the image 
+https://docs.docker.com/get-started/workshop/02_our_app/
+
+docker run -d -p 3000:3000 getting-started-app - to  run the above app
+
+moving app from Linux to window or cloud, docker will taker care.
+
+docker network - connect bridge between one image to another image.
+
+
+integrating docker in Ci/CD (currently with local VM as server):
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-on-ubuntu
+
+project should be created or exist.
+create dockerfile and add commands related to project
+
+install git lab runner in server (local in this case)
+in GitLab , create project runner , provide tags if needed, select the OS 
+register the runner in gitlab using local machine
+
+create deployment user in local server add to docker group.
+
+setup the ssh key in server (local).
+configure ssh in the ci/cd variable.
+configure server ip and  user in ci.cd variable.
+
+configure the gitlab yml file in project
+
+
+GitOps:
+
+upgrade and maintenance of application taken care by Kubernetes.
+
+devops approach:
+ANy ci/cd pipeline , different ports like app port , infrastructure port
+
+commit in repo, Jenkins trigger pipeline and deploy in Kubernetes as part CD
+
+limitation:
+cluster cred are stored in CI system
+CI system have read/write access to k8cluster
+deployment depends on CI system.
+
+so to avoid limitation , introduce GitOps.
+
+GitOps
+
+commit code and Jenkins trigger will happen. Jenkins not connected to Kubernetes deployment.
+Gitops agent will pull the docker image and deploy.
+
+Benefits:
+
+deployment approach not coupled to Ci
+CI system does not need access k8 cluster
+scan and pull container from images registry.
+
+principles:
+
+
+workflow:
+
+code ->commit to git -> build to container image ->push to container image registry
+
+other flow need to write
+
+Fluxcd:
+
+continuous monitor the running appl , comparing live states to desired state.
+
+scan image repo and update container images automatically before pushing or committing back to repo
+
+automatic deployment
+support multiple config like Kubernetes, helm, oci
+works with all git providers
+multi tenancy and manage apps in pr out Kubernetes cluster
+provides alternating to system
+many more 
+
+
+Components
+
+Flux CLI
+terraform
+api 
+controllers
+
+Flux installation steps:
+
+
+
+1 Install Kubectl in machine
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+2. create cluster using Kind software (need docker and kubectl)
+3. flux installation using commands
+
+4. flux bootstrap installation (kube cluter connect to git hub repo)
+
+
+source controller:
+monitor git hub , any changes in repo, notify the Kubernetes and modify kube cluter accordingly
+
+kustomize controller:
+
+sc takes port , customize controller will validate it 
+
+
+health controller:
+
+manages health chart
+
+image optimization controller:
+
+-> image automation controller -takes latest image
+-> image reflector controller - image policy and image repo (tags of repo ) will take latest tag of repo by policy 
+
+
+notification controller"
+
+notify via email if any changes
+
+sealed secret:
+deploy and use bitnami sealed secrets in flux
+
+https://kodekloud.com/free-labs/kubernetes/familiarize-lab-stable
+
+
+ArgoCD:
+
+its simple than fluxCd
+open source declarative CD tool
+similar to flux cd functionality and follows GitOPs principle.
+
+API server , repo service and application controller
+
+kubectl create namespace argocd kubectl apply -n argocd -f https://raw.githubusercontent.com/a
+https://kodekloud.com/free-labs/kubernetes/pods-stable
+
+https://www.digitalocean.com/community/tutorials/how-to-deploy-to-kubernetes-using-argo-cd-and-gitops
+
+
+fix made:kubectl port-forward svc/argocd-server -n argocd 8080:443 --address=0.0.0.0
+
+DevSecOps:
+covers all security aspects of the pipeline
+ 
+1. Software composition analysis (using Synk):
+code inspector for projects 
+scans the dependencies , cross referencing each against DB of security vulnerability
+Synk tool to scan the vulnerability 
+
+2. static application security testing :
+code auditor for the software
+deep dive into code base , analyze the structure , data flow and coding pin point like sql injection
+Hourusec security test is a tool to integrate
+
+3. Dynamic application security testing:
+stress testing. stimulate real world attack 
+
+4. container security Test: app inside container to protect from threat . scan any vulnerability inside container
+
+template are there for DAST, SAST, CST and SCA.
+
+Vulnerability management :
+will go for the security vulnerabilities, but because we are already using DAST, SAST, and SCA, I don't think, we need to add this one also.
+
+Monitoring : monitor in the devsecops
+
+
+Platform Engineering in devsecops:
+
+lot of tools and variation in managing the infrastructure on CI/CD 
+
+implementing pipeline on devsecops pipeline is platform
+
+when we need platform?
+to internal team like POC , load testing, different type of testing, before they can move that application into the production. The application developer team will also be, actually be adding some new features that you need to test also.hat normally is done in the… on the platform which you're actually providing to your team,
+
+Platform Engineering:
+building and operating a common platform as a product for tech teams.
+
+Internal Developer Platform (IDP):
+provides services to the platform engineering team, it also provides automation, and it is integrated with the different other tools. So, basically, you are creating a platform, because ultimately, you are creating a platform for your team.
+
+PE is a new product
+Basically, it is a self-service platform where you can go over there directly create an account, it's like a cloud service, you can say. The cloud service is where you are just going over there, and whatever the service you want to use. 
+
+Benefit:
+reduces delay in development
+improves productivity
+provide consistency and confidence
+helps scale teams
+
+Devsceops , SRE and platform engineering team organization:
+
+Treat PE as product:
+requirements
+product manager
+planning
+onboarding
+feedback 
+
+features:
+Infrastructure provisioning
+container platform
+self services pipeline
+change and release management
+observability tools
+identity management
+secret management
+security baseline
+automation security integration  
+load testing platform
+
+Treat platform as most viable product
+Most viable product in a way that it can help everyone within your team to innovate. To innovate, to learn, to prioritize, to build, to measure, and everything
+
+Git hub action:
+automate tasks within your software developments
+event driven means runs series of action
+
+workflows: automated procedure that add to the repo
+
+events : process like commit to repo
+
+job : like build, test , scan jobs
+
+
+steps: commands or each steps executed by runner in job 
+
+actions : parts of steps
+
+runner : like server 
+
+git hub hosted runner s and self hosted runners
+
+demo:
+https://spacelift.io/blog/github-actions-tutorial
+
+we can create go.yml file under the GitHub it will automatically generate jobs like pipeline in GitHub
+
+need go software for go program
+
+fork it to the our account from https://github.com/jagdishmodi/go-testing.git
+
+TerraForm - AWS
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. It allows you to define, provision, and manage cloud infrastructure in a declarative way — meaning you describe what you want, and Terraform figures out how to create it.
+
+in AWS, we
+VPC - virtual private cloud is network 
+add storage 
+EC2 - creates virtual machine
+
+if any documentation missed in any steps it cause prod issue to overcome we go for terrform
+terraform supports multiple platform like windows , mac
+simple config
+easy integration like ansible
+easy extensible with help of plugins
+its free to use
+
+it will be .tf form
+
+iam - manages user to authenticate
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#argument-reference
+https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+
+install terraform , aws cli
+create provider.tf and resource.tf 
+provide token 
+terraform plan
+terraform apply
+
+creates machine/instances in the Linux/other os using terraform
+
+terraform destroy - delete all resources
+
+Cloud formation:
+
+Infrastructure management can be done in cloudform for apps like uber , swiggy 
+
+create infrastructure in consistent manner.
+
+its a declarative approach
+self documenting 
+AWS API interactions 
+versioning
+reproducibility 
+
+works in both Json and Yaml 
+
+Templates:
+Resource action
+parameter
+mappings
+output 
+condition
+
+Resource:
+we can create resource stack using yaml template upload in the aws portal
+ cloudformation->stacks->create stack 
+
+we can update the template and update the config and execute the update changes
+
+parameter:
+we can provide parameter to give values in drop down format and refer the parameter like we may need resource size might differ for dev and prod with same template . 
+here we can provide size parameters like t2.micro , t2.medium, t2.large. it will come as dropdown when we provide as instance parameter and refer it in the place
+
+mappings:
+map the different regions and resource like name value pair
+
+condition:
+check for condition and apply template like if env is prod set the size as t2.large else if test set the size as t2.micro
+
+Output:
+when resource is created , we can provide some output

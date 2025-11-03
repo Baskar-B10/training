@@ -1,0 +1,536 @@
+Sorting - DSA
+
+Simple (but slow) Sorts — O(n²)
+Bubble Sort: Repeatedly swap adjacent elements if they are in the wrong order.
+Insertion Sort: Builds sorted part one element at a time by inserting each element into the correct position.
+selection Sort: Repeatedly pick the minimum (or maximum) and move it to the correct place.
+
+Efficient Sorts — O(n log n)
+Merge Sort (Divide & Conquer): Divide array into halves, sort them, and merge.Good for: Linked lists or when stability is needed
+Quick Sort (Divide & Conquer): Pick a pivot, partition array, and sort recursively.Very fast in practice (used in many standard libraries)
+Heap Sort: Use a heap to repeatedly extract the max/min.Good when in-place, consistent time is needed
+
+Linear-Time Sorts (when input has constraints)
+Counting Sort: Only works for small integer ranges.
+Radix Sort: Works digit-by-digit (like for integers or strings).Good for: Strings, IDs, etc.
+Bucket Sort: Divide into buckets, sort each, then combine.Best when input is uniformly distributed.
+
+Sort	Time (Best/Average/Worst)	Space	Stable	In-place
+Bubble		O(n) / O(n²) / O(n²)	O(1)	✅	✅
+Insertion	O(n) / O(n²) / O(n²)	O(1)	✅	✅
+Selection	O(n²) / O(n²) / O(n²)	O(1)	❌	✅
+Merge		O(n log n)		O(n)	✅	❌
+Quick		O(n log n) / O(n²)	O(log n)❌	✅
+Heap		O(n log n)		O(1)	❌	✅
+Counting	O(n + k)		O(k)	✅	❌
+Radix		O(nk)			O(n + k)✅	❌
+
+
+1. You have an array of 10,000 random integers. You don’t need to preserve the order of equal elements. Memory usage should be low, and you want it to be as fast as possible.
+
+Quick Sort:
+Large input size (10,000)
+Random values (so no bad pivot expected)
+No need for stability (equal elements can be reordered)
+Low memory requirement
+
+2. You’re sorting a small array (less than 30 elements) that’s almost sorted already.
+Which algorithm would you choose?
+
+Insertion Sort:
+For small arrays, insertion sort has very little overhead.
+For almost sorted data, it can perform in nearly O(n) time.
+It’s simple, fast, and stable — no need for recursion or extra memory.
+
+Insertion Sort:
+It works by taking one element from the input data, finding the correct position for it in the already sorted part of the list, and inserting it there
+Shifts smaller elements left
+
+How Insertion Sort Works (Step-by-Step):
+1.Start with the second element (index 1) in the array.
+2.Compare it with the elements before it.
+3.Shift all elements that are greater than this element one position to the right.
+4.Insert the element at its correct position.
+5.Move to the next element and repeat until the entire array is sorted.
+
+real life example:
+Organizing Files on Your Computer - When you drag and drop files into a folder and the folder sorts files by date or name automatically, your computer might use a process similar to insertion sort if it’s sorting incrementally as new files arrive.
+
+pseudocode:
+
+1. iterate from 2nd element to last
+2. take the element and previous index 
+3. compare with previous element, if value is less then move the previous element to right position (i.e current position)
+3. repeat same  with before index values until given value is greater than previous index value so we can keep move the big values towards right 
+4. once we find greater value then place the key (element) in right position.
+
+while loop to check boundaries here like index should not be less than 0, 
+
+Basic if we have ( 3,4,5,1) take iteration from 4 to 1, 
+1st iteration element is 4 ,compare with 3 , 3 not greater than 4 , loop exist
+2nd iteration element is 5, compare with 4, 4 not greater than 5 , loop exist
+3rd iteration, element is 1 compare with 5, 5 greater than 1 so move 5 to next place , then check 4 with 1 again greater so move 4 to next and check with 3 , again greater so move the 3 to next right now we can keep the 1 at 0th index.
+
+
+Basic if we have [5, 1, 4, 2, 8] take iteration from 1 to 8, 
+1st iteration element is 1 ,compare with 5 , 5  greater than 1 ,so place 5 in next place and keep 1 in before place
+2nd iteration element is 4, compare with 5, 5  greater than 4 , so place 5 in next place and keep 4 in before place
+3rd iteration, element is 2 compare with 5, 5 greater than 2 ,so place 5 in next place and keep 4 in before place
+4th iteration, element is 8 compare with 5, 5 is not greater than 8 ,loop exist
+
+{3,4,5, 1}
+for (int i = 1; i < arr.length; i++) {
+    int key = arr[i];       // Current element to insert 1
+    int j = i - 1;          // Start comparing with previous elements 3
+    while (j >= 0 && arr[j] > key) { 4>1
+        arr[j + 1] = arr[j];  // Shift element to right 
+        j--; 
+    }
+    arr[j + 1] = key;       // Insert key in the right position 3
+}
+Take each element and "insert" it into the correct place in the sorted part of the array.
+
+Bubble Sort:
+Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order.
+
+Moves the largest (or smallest) to the end each pass
+
+real life example:
+
+1. arrange book in shelf by thickness
+2. arrange person by height
+
+pseudocode:
+
+1. iterate element 2 times 
+2. inner loop check the element with next element if its greater than next then swap it.
+3. outer loop for iterating times to compare with next elements.
+
+[5, 1, 4, 2, 8]
+
+1st iteration of outer loop i=0 , so J goes up to 3 (5, 1, 4, 2, 8)
+   inner loop 
+       j=0 check 1 and 5 , swap it now 1,5,4,2,8
+       j=1 check 4 and 5 , swap it now 1,4,5,2,8
+       j=2 check 2 and 5 , swap it now 1,4,2,5,8
+       j=3 check 8 and 5 , no swap now 1,4,2,5,8
+2nd iteration i=1 so J goes up to 2 (1,4,2,5,8)
+inner loop 
+       j=0 check 1 and 4 , no swap now 1,4,2,5,8
+       j=1 check 4 and 2 , swap it now 1,2,4,5,8
+       j=2 check 4 and 5 , no swap now 1,2,4,5,8
+3rd iteration i=2 so j goes upto 1 (1,2,4,5,8)
+inner loop 
+       j=0 check 1 and 2 , no swap now 1,2,4,5,8
+       j=1 check 2 and 4 , no swap now 1,2,4,5,8
+4th iteration i=3 so j goes upto 0 (1,2,4,5,8)
+inner loop 
+       j=0 check 1 and 2 , no swap now 1,2,4,5,8
+
+
+	
+
+void bubbleSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // swap
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+Push largest elements to the end like bubbles rising.
+Feature		Bubble Sort				Insertion Sort
+Comparison	Always compares adjacent elements	Compares current with all before it
+Swapping	Swaps every time two adjacent elements  Shifts elements and inserts at right spot
+		are out of order	
+Passes		Always does n-1 passes			Can exit early if already sorted
+Best Case Time	O(n²) even if sorted (unless optimized)	O(n) if already sorted
+Stable?		✅ Yes					✅ Yes
+In-place?	✅ Yes					✅ Yes
+
+
+Sort Type	Compares With	Moves Elements	Final Positioning
+Insertion Sort	Previous ones	Shifts smaller elements left	Inserts current element at right spot in sorted left part
+Bubble Sort	Next one	Swaps larger elements right	Pushes largest element to the end in each pass
+
+
+Selection Sort
+Selection Sort works by repeatedly finding the minimum (or maximum) element from the unsorted part and putting it at the beginning.
+
+real life:
+1.Selecting the Best Player in Sports Tryouts
+2.Arranging Books by Price
+
+pseducode:
+
+1. iterate loop with size of array , iterate inner loop to compare with next elements
+2. find the smallest element and swap the position in first 
+3. repeat it until its sorted.
+
+[5, 1, 4, 2, 8]
+1st iteration of outer loop i=0 
+   inner loop 
+       j=1 check 1 and 5 , 1 is small than 5 minIndex=1
+       j=2 check 4 and 1 , 4 is not small than 1
+       j=3 check 2 and 1 , 2 is not small than 1
+       j=4 check 8 and 1 , 8 is not small than 1
+1 is small so swap it with 5 , [1,5,4,2,8]
+2nd iteration i=1
+inner loop 
+       j=2 check 5 and 4 ,  4 is small than 5 minIndex=2
+       j=3 check 4 and 2 , 2 is small than 4 minIndex=3
+       j=4 check 2 and 8 , 8 is not small than 2
+2 is small so swap it with 5 , [1,2,4,5,8]
+3rd iteration i=2
+inner loop 
+       j=3 check 4 and 5 , 5 is not small than 4
+       j=4 check 4 and 8 , 8 is not small than 4
+4 is swapped on same index , [1,2,4,5,8]
+4th iteration i=3
+inner loop 
+       j=4 check 5 and 8 , 8 is not small than 5
+
+
+    // Method to perform selection sort
+    public static void selectionSort(int[] arr) {
+        int n = arr.length;
+
+        // Traverse through all array elements
+        for (int i = 0; i < n - 1; i++) {
+            // Find the index of the minimum element in the unsorted part
+            int minIndex = i;
+
+            for (int j = i + 1; j < n; j++) {
+                // If current element is smaller than current min, update minIndex
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+
+            // Swap the found minimum element with the first unsorted element
+            int temp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = temp;
+        }
+    }
+
+Merge Sort:
+
+Divide recursively until you reach single-element arrays. Merge them back in sorted order. Merge process always compares and builds a sorted result.
+Very efficient: O(n log n) time complexity.
+
+Real life example:
+Merging Two Sorted Stacks of Paper
+Team Sorting at a Company (Divide & Conquer)
+Merging Sorted Files (e.g., Logs, Data Reports)
+Library Book Arrangement (from Two Branches)
+External Sorting of Big Data (Hard Drive Sorting)
+
+
+PsedoCode:
+1. divide array into 2 halves until array size is 1.
+2. merge array by compare them like compare array1[a1] and array2[a2], create array3[a1,a2]
+3. so all divided array now merging into sorted order until it looks like sorted.
+
+[5, 1, 4, 2, 8]
+first divide into 2 half [5,1,4] as left and [2,8] as right
+divide [5,1,4] into 2 as [5,1] and [4]
+divide [5,1] as [5] and [1]
+divide [2,8] as [2] and [8]
+
+now merge using compare the 2 array and put in order 
+ [2] and [8] , 2 is small so [2,8]
+[5] and [1] , 1 is small so [1,5]
+[1,5] and [4] 1 is small so 1st then 4 is small than 5 so [1,4,5]
+[1,4,5] and [2,8] , merge as [1,2,4,5,8]
+
+
+
+public class MergeSortExample {
+
+    public static void mergeSort(int[] arr, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+
+            // Sort first and second halves
+            mergeSort(arr, left, mid);
+            mergeSort(arr, mid + 1, right);
+
+            // Merge sorted halves
+            merge(arr, left, mid, right);
+        }
+    }
+
+    public static void merge(int[] arr, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+
+        for (int i = 0; i < n1; i++)
+            L[i] = arr[left + i];
+        for (int j = 0; j < n2; j++)
+            R[j] = arr[mid + 1 + j];
+
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                arr[k++] = L[i++];
+            } else {
+                arr[k++] = R[j++];
+            }
+        }
+
+        while (i < n1)
+            arr[k++] = L[i++];
+        while (j < n2)
+            arr[k++] = R[j++];
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {5, 1, 4, 2, 8};
+
+        mergeSort(arr, 0, arr.length - 1);
+
+        for (int num : arr)
+            System.out.print(num + " ");
+    }
+}
+
+quicksort:
+
+Picking a pivot element from the array. Partitioning the array so that elements less than the pivot go to the left, and those greater go to the right. Recursively applying the same steps to the left and right subarrays.
+
+real life:
+Search engines
+Database systems
+E-commerce
+Organizing Shoes by Size (Pivot Strategy)
+
+pseudocode:
+
+1. take the low and high index and consider pivot as high index.
+2. check the elements with pivot , if its less than move left of pivot and finally place the pivot correct place.
+3. do it recursively and swap the  left side and  right side of pivot.
+[5, 1, 4, 2, 8]
+
+a1 low =0 , high =4
+array = [5, 1, 4, 2, 8] , low =0 , high =4
+inside partition:
+	pivot = 8  compare it with all i=-1 
+	j=0,  5<8 so i=0, swap a[0] t0 a[0] so same 5 at 0 index
+	j=1,  1<8 so i=1, swap a[1] t0 a[1] so same 1 at 1 index
+	j=2,  4<8 so i=2, swap a[2] t0 a[2] so same 4 at 2 index
+	j=3,  2<8 so i=3, swap a[3] t0 a[3] so same 2 at 3 index
+	outer for loop , i becomes 4(i+1) and high = 4 so swap a[4] to a[4] so same  8 at 4 index and return 4 as Pi <pivot index i+1>
+a11 pi=4
+array = [5, 1, 4, 2, 8] , low =0 , high =pi-1 = 4-1 =3
+inside partition:
+	pivot = 2 compare it with all i=-1 
+	j=0,  5 not < 2 no change,  i=-1
+	j=1,  1<2 so i=0, swap a[1] t0 a[0] then array becomes [1,5,4,2,8]
+	j=2,  4 not < 2 no change,  i=0 still
+	outer for loop , i becomes 1(i+1) and high = 4 so swap a[1] to a[4]  , array becomes [1,2,4,5,8] and return 1 as Pi  <pivot index i+1>
+a111 pi=1
+array = [1, 2, 4, 5, 8] , low =0 , high =pi-1 = 1-1 =0
+inside partition:
+	pivot = 1 compare it with all i=-1 
+	j=0,  1 not < 1 no change,  i=-1
+	outer for loop , i becomes 0(i+1) and high = 0 so swap a[0] to a[0]  , array becomes [1,2,4,5,8] and return 0 as Pi  <pivot index i+1>
+a1111 pi=0
+array = [1, 2, 4, 5, 8] , low =0 , high =pi-1 = 0-1 =-1 stops recursion no next line 
+a112 pi=1
+array = [1, 2, 4, 5, 8] , low =pi+1= 2, high =3
+inside partition:
+	pivot = 5 compare it with all i=-1 
+	j=0,  1<5 so i=0, swap a[0] t0 a[0] so same 1 at 0 index
+	j=1,  2<5 so i=1, swap a[1] t0 a[1] so same 2 at 1 index
+	j=2,  4<5 so i=2, swap a[2] t0 a[2] so same 4 at 2 index
+	outer for loop , i becomes 3(i+1) and high = 3 so swap a[3] to a[3]  , array becomes [1,2,4,5,8] and return 3 as Pi  <pivot index i+1>
+	
+recursion stops after single element and invalid further
+
+public class QuickSortExample {
+
+    // Main quickSort function
+    public static void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            // Partitioning index
+            int pi = partition(arr, low, high);
+
+            // Recursively sort elements before and after partition
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
+        }
+    }
+
+    // Partition function to place pivot correctly and arrange elements
+    public static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];  // Choose last element as pivot
+        int i = low - 1;        // Index of smaller element
+
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                // Swap arr[i] and arr[j]
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        // Swap pivot to correct position
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+
+        return i + 1;  // Return pivot index
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {5, 1, 4, 2, 8};
+
+        System.out.println("Original array:");
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+
+        quickSort(arr, 0, arr.length - 1);
+
+        System.out.println("\nSorted array:");
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+    }
+}
+
+Heap Sort:
+It is a comparison-based sorting algorithm that uses a binary heap data structure (specifically, a max heap).
+Max Heap: A binary tree where the parent is always greater than or equal to its children.
+Heap Sort builds a max heap from the array, then:
+Swaps the root (largest element) with the last element.
+Reduces the heap size.
+Re-heapifies (restores max heap).
+Repeats until sorted.
+The array itself is treated as a complete binary tree.
+We use index calculations to navigate the tree without explicitly building nodes or pointers.
+For node at index i:
+Left child is at 2*i + 1
+Right child is at 2*i + 2
+Parent is at (i - 1) / 2
+This in-place representation is why heap sort is efficient and uses O(1) extra space.
+
+real life example:
+Leaderboard Systems
+Priority Queues / Task Scheduling
+
+pseudocode:
+ 1. first take half of first mid element from reverse and heapify , find the largest and swap it 
+2. iterate all elements in reverse and heapify reccursiverly if index not match with largest index
+3. in heapfiy , take left 2*i + 1 and right as 2*i + 2 , compare among 3 values if its in index and take largest , swap the largest to 
+index. so this recusively for all iteration.
+
+first for loop:[5, 1, 4, 2, 8]
+n/2 - 1 = 5/2 - 1 = 1
+iterate 0 and 1 
+
+for i=1 , heapify (arr, 5,1)
+largest = 1, left = 3 (2 * 1 +1), right=4 (2 * 1 +2)
+a[1]=1, a[3]=4, a[4]=8 , swap 8 to index 1 (i=1) array becomes [5,8,4,2,1]
+for i=0 , heapify (arr, 5,0)
+largest = 0, left = 1 (2 * 0 +1), right=2 (2 * 0 +2)
+a[0]=5, a[1]=8, a[2]=4 , swap 8 to index 0 (i=0) array becomes [8,5,4,2,1]
+
+Max heap built:[8,5,4,2,1]
+
+second for loop, i range from 4 to 0
+for i=4 , [8,5,4,2,1]
+	swap a[4] to a[0], array becomes [1,5,4,2,8], heapify (arr, 4,0)
+	largest = 0, left = 1 (2 * 0 +1), right=2 (2 * 0 +2)
+	a[0]=1, a[1]=5, a[2]=4 , swap 5 to index 0 (largest=0) array becomes [5,1,4,2,8] and largest =1
+	since 4 is not equal to 1 i and largest comparison go recursively next heapify (arr, 4,1 as largest)
+	largest = 1, left = 3 (2 * 1 +1), right=4 (2 * 1 +2) -> out of bond as n=4
+	a[1]=1, a[3]=2 ,swap 2 to index 0=1 (largest=1) array becomes [5,2,4,1,8] and largest =3
+	since 4 is not equal to 3 i and largest comparison go recursively next heapify (arr, 4,3 as largest)
+	largest = 3, left = 7 (2 * 3 +1) and right=8 (2 * 3 +2) -> out of bond loops end
+for i=3 , [5,2,4,1,8]
+	swap a[3] to a[0], array becomes [1,2,4,5,8], heapify (arr, 3,0)
+	largest = 0, left = 1 (2 * 0 +1), right=2 (2 * 0 +2)
+	a[0]=1, a[1]=2, a[2]=4 , swap 4 to index 0 (largest=0) array becomes [4,2,1,5,8] and largest =2
+	since 3 is not equal to 2 i and largest comparison go recursively next heapify (arr, 3,2 as largest)
+	largest = 2, left = 5 (2 * 2 +1) and right=6 (2 * 2 +2) -> -> out of bond loops end
+for i=2 , [4,2,1,5,8]
+	swap a[2] to a[0], array becomes [1,2,4,5,8], heapify (arr, 2,0)
+	largest = 0, left = 1 (2 * 0 +1), right=2 (2 * 0 +2)->out of indexs
+	a[0]=1, a[1]=2,swap 2 to index 0 (largest=0) array becomes [2,1,4,5,8] and largest =1
+	since 2 is not equal to 1 i and largest comparison go recursively next heapify (arr, 2,1 as largest)
+	largest = 1, left = 3 (2 * 1 +1), right=4 (2 * 1 +2) -> out of bond as n=4
+for i=1 , [2,1,4,5,8]
+	swap a[1] to a[0], array becomes [1,2,4,5,8], heapify (arr, 1,0)
+	largest = 0, left = 1 (2 * 0 +1)and  right=2 (2 * 0 +2)-> out of bond loops end
+
+
+public class HeapSort {
+
+    public void sort(int arr[]) {
+        int n = arr.length;
+
+        // Step 1: Build Max Heap
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(arr, n, i);
+
+        // Step 2: Extract elements one by one from the heap
+        for (int i = n - 1; i > 0; i--) {
+            // Swap root (max) with the last element
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+
+            // Heapify the reduced heap
+            heapify(arr, i, 0);
+        }
+    }
+
+    // To heapify a subtree rooted at index i
+    void heapify(int arr[], int n, int i) {
+        int largest = i;          // Initialize largest as root
+        int left = 2 * i + 1;     // Left child
+        int right = 2 * i + 2;    // Right child
+
+        // If left child is larger
+        if (left < n && arr[left] > arr[largest])
+            largest = left;
+
+        // If right child is larger
+        if (right < n && arr[right] > arr[largest])
+            largest = right;
+
+        // If root is not the largest
+        if (largest != i) {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            // Recursively heapify the affected subtree
+            heapify(arr, n, largest);
+        }
+    }
+
+    // Example usage
+    public static void main(String args[]) {
+        int arr[] = {5, 1, 4, 2, 8};
+        HeapSort hs = new HeapSort();
+        hs.sort(arr);
+
+        System.out.println("Sorted array:");
+        for (int i : arr)
+            System.out.print(i + " ");
+    }
+}
+

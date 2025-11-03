@@ -1,0 +1,626 @@
+In monolithic , all services as a single service runs on single VM.
+
+In MS- each services runs on its VM , so it takes some resource.
+
+Infrastructure issue in MS - different VM, OS, resources for different services.
+
+Using container technology , it introduces container runtime software like docker, containerd,rkt.
+
+create same VM for all the service as container.
+
+Using docker , we will use run time software
+Docker 
+community edition , enterprise edition
+
+free to learn docker commands:
+https://kodekloud.com/free-labs/docker/docker-basic-commands
+
+install docker: using documentation
+https://kodekloud.com/free-labs/docker/docker-basic-commands
+
+container image - code , lib , binaries m , dependencies
+
+ISO image
+
+create Container - Image
+
+1. public images 2, custom Images.
+
+docker pull nginx - get nginx from net
+docker images - shows images list
+
+docker run <image name>
+docker run nginx - will run on the VM directly 
+
+run in background:
+docker run -d -p <vm port>:<container port> <image name>
+
+docker run -d -p 80:80 nginx
+
+create own images:
+
+ need docker file - commands+ arguments under repo.
+
+docker file commands:
+
+from <image name>- base images to use to start the build process like from ubuntu
+
+run - run the image to install the package 
+
+CMD - command to start the app 
+
+ENV - set up environment variables
+
+workdir /path/ - set up working directory
+
+Expose [port] - container to ru o specific port
+
+volume 
+maintainer
+example to create own image from app
+
+https://docs.docker.com/get-started/workshop/02_our_app/
+
+manage bigger env like 100 Vm and 1000 of containers. need to manage below things as well
+
+1 High availability (if vm down, container should run on other Vm or if container down then need to run within the vm)
+
+2 scalability and elasticity (10 container , traffic increased may need 100 containers)
+
+3 maintain lifecycle status(upgrade/backup).
+
+4 orchestration , security part
+
+Kubernetes: to orchestrate all above , we need Kubernetes
+ google open source next gen container schedular
+google given to CNCF 
+google created GKS
+azure created AKS
+
+features:
+load balancing
+self healing
+storage orchestration
+automated roll back
+
+Docker swarm: open source from docker 
+
+similarities with Kubernetes and swarm but master node and worker node in Kubernetes
+
+difference : autoscaling in Kubernetes , not in DS
+monitoring in K is comprehensive
+managed services in K
+
+Kubernetes Architecture:
+Master node and worker node
+Master - brain of cluster, activity managed by it
+worker - deploy apps in worker only 
+technically deploy in master but iyts not recommended 
+
+Master components:
+Kube-apiserver: communication between master and worker also user and cluster. deploy app as container - user send request to master node. Kube-apiserver will validate the request whether user can deploy the app in the worker node
+
+etcd: database contains all config info's of cluster. 
+
+kube schedular : schedules your apps to deploy on worker node
+
+kube controller manager: manager of multiple controller.
+
+common components /Node Components :
+kubelet - agent in both nodes. kubelet  works with your container runtime software, normally it is used in worker node, so if any request for any application or container deployment comes , Kubelet will take care of that request, and Kubelet will connect with your container runtime to create that.
+
+Kube proxy - networking proxy between master and worker on VM level. runs on every node
+
+container runtime engine - engine to run the container
+-----
+kuberneetes wont automate load balance, we have separte load balancer , we can connect kuberneetes with load balancer to get scaling 
+
+
+kubeAdm - utility which we want to create our cluster
+ 
+on-prem environment , cloud -IAas /Vms - both master and worker node ,we are responsible
+
+AKs, GKS and EKS - master by cloud and worker by us
+
+control-plane - master 
+Linux have different os like unbantu, centos , Debian,Red Hat, Fedora ,Susolina
+
+setup Kubernetes  cluster :
+https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
+no need of step 7 and 8 from above link
+step 10 - did only kubeadm init not that in link
+
+master should have atleast 4 GB
+
+Kubeadm. A tool that initializes a Kubernetes cluster by fast-tracking the setup using community-sourced best practices.
+Kubelet. The work package that runs on every node and starts containers. The tool gives you command-line access to clusters.
+Kubectl. The command-line interface for interacting with clusters.
+
+third party tool needed to connect between master and worker
+
+kubectl get ns - display all deatils of namespace
+kubectl get pods -n kube-system - display all kube-system detail like etcd, kube apiserver
+
+conectity between master and worker , between container and multiple vm - tool needed CNI
+ 
+Container network interface CNI- flannel, calico, weaveworks companies to provide CNI
+
+Kubernetes Objects:
+create resources as object.
+
+to create object
+	1 imperative - kubectl 
+ 	2 declarative - yaml based 
+ 
+Mostly prefer Yaml because we can mange it easily
+ 
+1 pod 
+2 deployment
+3 service
+4 namespace
+
+Pod: small unit we can create and manage in Kubernetes cluster. deploy app/container as pod object in Kubernetes. Pod is one or group of containers with shared storage and network resources
+
+mostly we prefer 1:1 for pod and container but we can have multiple container in pod 
+1. single container pod
+2. multiple container pod
+
+Basic scheduling unit is POD
+Pod runs on a node
+cant stretched across multiple node
+multiple copy of pods called replica
+Pod cannot be live migrated to another node  
+
+skeleton of YAML:
+
+1. apiVersion - version that we connect to node 
+2. Kind - type of object
+3. metadata - attributes of pod object. Label is important here.
+4. spec - specification of pod object and containers 
+
+create resources using YAML:
+
+create pod - pod.yaml
+apiVersion: v1
+kind: pod
+metadata:
+  name: nginx-app
+  labels:
+     app: front-end
+     env: prod
+spec:
+  containers:
+      -name: ngnix-containers
+       image: ngnix
+commands:
+kubectl get pods -o wide -> gives ip address too
+kubectl apply -f ,
+ kubectl get pods,
+ kubectl describe pod <pod-name> ,
+ kubectl logs <pod-name> ,
+ kubectl exec -it <pod-name> /bin/bash
+
+https://kubernetes.io/docs/concepts/workloads/pods/
+
+Pod state:
+
+pending phase 
+running phase
+succeeded/failed/unknown phase
+
+container state:
+running 
+pending
+terminated
+
+Limit - max limit of resource for a container
+requests- min guaranteed resource for a container
+
+request 2 cpu , 4 GB , but VM is 1 CPU and 2 GB so pod will be in pending state
+
+2. Namespace: divide resource among multiple users within Kubernetes cluster
+
+kubectl get pods -n <namespaceName>
+-provide list of pods in the namespace
+
+by default , its default namespace if no namespace 
+in pod file
+apiVersion: v1
+kind: pod
+metadata:
+  name: nginx-app
+  namespace: prod
+  labels:
+     app: front-end
+     env: prod
+spec:
+  containers:
+      -name: ngnix-containers
+       image: ngnix
+
+Labels:
+key value pairs
+
+3.Deployment :
+kubectl get deployments
+deploy container as deployment object 
+here we provide replica value , that much pods gets created.
+
+we can configure using deployment.yaml similar to pod.yaml and apply in kubectl
+
+if we provide 3 replica, 3 pod instances created , when we delete one pod then new one will create so it maintains 3 pods
+
+Features:
+Replica Management
+Label selectors
+scaling 
+matchLabels : we provide the app name so it match the name of pod  
+
+Replica Set: provide more flexiable label selectors
+
+Replication Controller : ensure pod availability
+
+
+deployment object, with 4 replicas, image : httpd , labels: app: frontend, env: prod
+both roll back and roll out available in deployment
+
+4. Replica Set: similar to deployment
+
+kubectl get replicaset
+
+deployment have roll back feature , version control than replica set
+
+ 
+
+controlplane ~ ➜  vi pod.yaml 
+
+---it will helps to Crete the pod 
+controlplane ~ ➜  kubectl apply -f pod.yaml
+pod/httpd-pod created
+
+controlplane ~ ➜  kubectl get pods
+NAME        READY   STATUS    RESTARTS   AGE
+httpd-pod   1/1     Running   0          8s
+
+controlplane ~ ➜  kubectl get deployments
+No resources found in default namespace.
+
+controlplane ~ ➜  kubectl get deployment
+No resources found in default namespace.
+
+controlplane ~ ➜  vi deployment.yaml
+
+controlplane ~ ➜  kubectl apply -f deployment.yaml
+deployment.apps/httpd-deployment created
+
+controlplane ~ ➜  kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+httpd-pod                           1/1     Running   0          3m7s
+httpd-deployment-7c4cc6bf78-6q5x7   1/1     Running   0          7s
+httpd-deployment-7c4cc6bf78-t7rd9   1/1     Running   0          7s
+httpd-deployment-7c4cc6bf78-mjwp5   1/1     Running   0          7s
+httpd-deployment-7c4cc6bf78-wnxtb   1/1     Running   0          7s
+
+controlplane ~ ➜  kubectl get deployments
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+httpd-deployment   4/4     4            4           17s
+
+controlplane ~ ➜  kubectl get replicaset
+NAME                          DESIRED   CURRENT   READY   AGE
+httpd-deployment-7c4cc6bf78   4         4         4       30s
+
+controlplane ~ ➜  kubectl get svc -o wide
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   38m   <none>
+
+controlplane ~ ➜  kubectl get nodes -o wide
+NAME           STATUS   ROLES                  AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+controlplane   Ready    control-plane,master   39m   v1.29.0+k3s1   10.244.135.50   <none>        Alpine Linux v3.16   5.15.0-143-generic   containerd://1.7.11-k3s2
+
+controlplane ~ ➜  kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   40m
+
+controlplane ~ ✖ kubectl expose deployment httpd-deployment --type=NodePort --port=80
+service/httpd-deployment exposed
+
+controlplane ~ ➜  kubectl get nodes -o wide
+NAME           STATUS   ROLES                  AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+controlplane   Ready    control-plane,master   41m   v1.29.0+k3s1   10.244.135.50   <none>        Alpine Linux v3.16   5.15.0-143-generic   containerd://1.7.11-k3s2
+
+controlplane ~ ➜  kubectl get svc -o wide
+NAME               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+kubernetes         ClusterIP   10.43.0.1      <none>        443/TCP        42m   <none>
+httpd-deployment   NodePort    10.43.75.151   <none>        80:32712/TCP   40s   app=httpd
+
+controlplane ~ ➜  curl http://10.43.0.1:443
+Client sent an HTTP request to an HTTPS server.
+ 
+
+Demonset - A DaemonSet runs one Pod per node.
+A Deployment runs N replicas (distributed wherever the scheduler decides).
+
+
+Stateful :
+
+maintain state or data across the seesion or interation eg: bank system saves all data of transaction history of customer
+
+Pod is stateful object. ordered, graceful and scaling, persistent storage , stable network identities and rolling updates
+
+
+staefulSet vs deployment 
+
+
+staefulSet -  ordinal index for name 
+deployment - random index name
+
+stateful using storage in every pod
+
+https://www.codingshuttle.com/kubernetes-handbook/deploying-stateful-applications-in-kubernetes/
+
+
+Kubernetes cluster upgrade:
+
+https://devopscube.com/upgrade-kubernetes-cluster-kubeadm/
+
+upgrade the Kubernetes cluster version by step by step - always go to 2 step like 1.29 to 1.31 till point if we have 1.34
+
+mostly we upgrade kubeadm . kunectl version to upgrade 
+
+Networking model:
+
+containers within the pods communicate using loopback address
+
+container between pods communicate using CNI
+
+Service:
+Service object as gateway to connect with right set of pods
+
+1. NodePort: define service as node port , traffic from outside to node port and node port to pods
+2. clusterIp: traffic from internal , then service acts as service and send to pods
+3. loadbalancerL traffic to load balancer then to service to the pods
+4. external service :traffic to external service  
+
+setup multi code :
+https://www.google.com/search?q=service+object+kubernetes+example+with+kind+cluster&sca_esv=fe06bbe1a7ea018c&rlz=1C1GCEA_enUS1171US1171&sxsrf=AE3TifPGyxwLtkP2tlQZC5tCDjWDmRW1xg%3A1761640186694&ei=-n4AaaeQKpasiLMPidKt-As&ved=0ahUKEwin9bKMvcaQAxUWFmIAHQlpC78Q4dUDCBE&uact=5&oq=service+object+kubernetes+example+with+kind+cluster&gs_lp=Egxnd3Mtd2l6LXNlcnAiM3NlcnZpY2Ugb2JqZWN0IGt1YmVybmV0ZXMgZXhhbXBsZSB3aXRoIGtpbmQgY2x1c3RlcjIEECMYJzIIEAAYgAQYogQyBRAAGO8FMgUQABjvBTIIEAAYogQYiQUyCBAAGKIEGIkFSOUQULwFWLwFcAJ4AJABAJgBdKAB0QGqAQMxLjG4AQPIAQD4AQGYAgOgAoYBwgIKEAAYsAMY1gQYR5gDAIgGAZAGCJIHAzIuMaAHjgmyBwMwLjG4B3jCBwMyLTPIBww&sclient=gws-wiz-serp
+
+ontrolplane ~ ➜  vi nginx-deployment.yaml
+
+controlplane ~ ➜  kubectl apply -f nginx-deployment.yaml
+deployment.apps/nginx-deployment created
+
+controlplane ~ ➜  vi nginx-service.yaml
+
+controlplane ~ ➜  kubectl apply -f nginx-service.yaml
+service/nginx-service created
+
+controlplane ~ ➜      kubectl get nodes -o wide
+NAME           STATUS   ROLES                  AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+controlplane   Ready    control-plane,master   11m   v1.29.0+k3s1   10.244.135.46   <none>        Alpine Linux v3.16   5.15.0-143-generic   containerd://1.7.11-k3s2
+
+controlplane ~ ✖ curl 10.244.135.46:30080
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+Ingress Controller:
+Ingress controller  used as load balance
+er to proxy the route to the port
+https://www.bing.com/search?pglt=43&q=ingress+deployment+on+kind+cluster+for+nginx+application&cvid=f71cc8a68bc04718b8c40215e9d76898&gs_lcrp=EgRlZGdlKgYIAhBFGDsyBggAEEUYOTIGCAEQLhhAMgYIAhBFGDsyBggDEAAYQDIGCAQQABhAMgYIBRAuGEAyBggGEAAYQDIGCAcQRRg8MgYICBBFGD0yCAgJEOkHGPxV0gEIMzM3OWowajGoAgiwAgE&FORM=ANNAB1&PC=U531
+
+Taint and Tolerations:
+define which node to avoid some things
+taints on node like
+kubectl taint nodes node -name key=value:taint-effect 
+kubectl taint nodes node1 app=myapp:Noschedule
+
+Node Selector :
+large or medium size available not small - limitation 
+
+Node affinity:
+ condition of complex instruction to schedule nodes
+2 available types and 1 planned type
+
+- Taint/Toleration = “Keep pods away unless they explicitly tolerate me.”
+- Label/Selector = “I’m just a tag. Other objects can use me to find or group resources.”
+
+
+create a node and taint blue color:
+controlplane ~ ➜  kubectl get nodes
+NAME           STATUS   ROLES                  AGE     VERSION
+controlplane   Ready    control-plane,master   9m52s   v1.29.0+k3s1
+
+controlplane ~ ➜  kubectl taint nodes controlplane color=blue:NoSchedule
+node/controlplane tainted
+
+controlplane ~ ➜  vi blue-pod.yaml
+
+controlplane ~ ➜  kubectl apply -f blue-pod.yaml
+pod/blue-pod created
+
+controlplane ~ ➜  kubectl get pods -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP          NODE           NOMINATED NODE   READINESS GATES
+blue-pod   1/1     Running   0          15s   10.42.0.9   controlplane   <none>           <none>
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: blue-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  tolerations:
+  - key: "color"
+    operator: "Equal"
+    value: "blue"
+    effect: "NoSchedule"
+then try to create a pod with same label and check whether it runs or now:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: blue-labeled-pod
+  labels:
+    color: blue
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+controlplane ~ ➜  vi blue-labeled-pod.yaml
+
+controlplane ~ ➜  kubectl apply -f blue-labeled-pod.yaml
+pod/blue-labeled-pod created
+
+controlplane ~ ➜  kubectl get pods -o wide
+NAME               READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES
+blue-pod           1/1     Running   0          3m18s   10.42.0.9   controlplane   <none>           <none>
+blue-labeled-pod   0/1     Pending   0          10s     <none>      <none>         <none>           <none>
+Why your pod is still Pending
+- You tainted the node with color=blue:NoSchedule.
+- Then you created a pod with a label color=blue but no toleration.
+- The scheduler looks at the taints on the node and sees: “This node has a taint. Does the pod tolerate it?”
+- Since your pod has no toleration, it is not allowed to be scheduled there, even though it has a label that looks similar.
+- Result: the pod stays in Pending because there’s nowhere it can legally run.
+
+Environment variables:
+
+setup it in the spec  like env as key value
+env:
+  -name: color
+   value: pink
+
+key and config map 
+env:
+  -name: color
+   valueFrom: 
+      configkeyRef
+key and secret object 
+env:
+  -name: color
+   valueFrom: 
+      secretKeyRef
+
+secrets:
+create secret object and inject in pod object
+
+secretobject deploy as volume
+
+https://phoenixnap.com/kb/kubernetes-secrets
+
+controlplane ~ ➜  echo -n 'admin' |base64
+YWRtaW4=
+controlplane ~ ➜  echo -n 'tranning123' |base64
+dHJhbm5pbmcxMjM=
+ 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: newsecret
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: dHJhbm5pbmcxMjM=
+~                                    
+
+controlplane ~ ➜  vi secret.yaml
+
+controlplane ~ ➜  kubectl apply -f secret.yaml
+secret/newsecret created
+
+controlplane ~ ✖ kubectl get secret
+NAME        TYPE     DATA   AGE
+newsecret   Opaque   2      92s
+
+controlplane ~ ➜  kubectl get secret newsecret -o jsonpath='{.data}'
+{"password":"dHJhbm5pbmcxMjM=","username":"YWRtaW4="}
+
+check rest later
+
+ https://kubernetes.io/docs/tutorials/stateless-application/guestbook/
+
+
+volume and mount:
+
+save the data since container is stateless , mount folder as a volume in the container
+
+we can use folder for storage or external storage from cloud or tools to integrate.
+
+persistent volume:
+stores resources in the cluster
+
+each PV assigned to storage class
+
+difference between PV vs volume
+
+types of persistent volume :
+
+local
+hostpath
+nfs
+iscsi
+csi - container storage interface
+cephfs
+fc
+rbd
+
+different access on PV:
+readwriteonce
+readonlymany
+readwritemany
+readwriteoncepod
+
+https://spacelift.io/blog/kubernetes-persistent-volumes
+
+storage class:
+class of storage which cluster opens 
+
+why?
+dynamic provisioning 
+flexibility 
+
+
+https://www.google.com/search?q=nginx+pod+with+storage+kubernetes&sca_esv=f4f4d625b74d76fe&rlz=1C1GCEA_enUS1171US1171&sxsrf=AE3TifPjcXCg5d0y9K_DFqGTMztS0e423A%3A1761819740615&ei=XDwDaZinJaeup84Pv5nm0Ag&oq=nginx+pod+with+storage+&gs_lp=Egxnd3Mtd2l6LXNlcnAiF25naW54IHBvZCB3aXRoIHN0b3JhZ2UgKgIIADIFECEYoAEyBRAhGKABMgUQIRigAUizcFAAWNpecAN4AJABAJgBcqABwRCqAQQxOS41uAEDyAEA-AEBmAIboAK-EcICChAjGIAEGCcYigXCAgQQIxgnwgILEAAYgAQYkQIYigXCAgsQABiABBixAxiDAcICCxAuGIAEGLEDGIMBwgIIEAAYgAQYsQPCAhEQABiABBiRAhixAxiDARiKBcICChAAGIAEGEMYigXCAhYQLhiABBixAxhDGIMBGMcBGIoFGK8BwgINEAAYgAQYsQMYQxiKBcICERAuGIAEGLEDGNEDGNQCGMcBwgIFEAAYgATCAgYQABgWGB7CAgsQABiABBiGAxiKBcICBRAAGO8FwgIIEAAYgAQYogTCAgUQIRirAsICBRAhGJ8FmAMA4gMFEgExIECSBwQyMC43oAeZogGyBwQxNy43uAeyEcIHBzAuMTAuMTfIB1g&sclient=gws-wiz-serp
+
+https://www.bing.com/search?qs=SSA&pq=2+tier+application+kuber&sk=CSYN1&sc=9-24&q=deploy+3+tier+application+in+kubernetes&cvid=04a401e01b244901aadade32ecb5286d&gs_lcrp=EgRlZGdlKgYIARAAGEAyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEAAYQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEAyCAgJEOkHGPxV0gEJMTE4MTFqMGo5qAIIsAIB&FORM=ANAB01&PC=U531
+
+https://medium.com/@aaloktrivedi/using-kubernetes-to-deploy-a-3-tier-containerized-application-infrastructure-9fbbbbc85ff6
+
+Security:
+
+all components have own certificate and keys
+
+certificate authority in Kubernetes cluster
+
+cluster level and normal level in roles 
+
+https://medium.com/@imyounas/setting-up-kind-kubernetes-cluster-with-prometheus-grafana-and-k6-for-monitoring-and-stress-14d658c4e66e
+
+https://phoenixnap.com/kb/install-helm
+
+argocd installation :
+
+https://www.google.com/search?q=argocd+cli+install+ubuntu&rlz=1C1GCEA_enUS1171US1171&oq=argocd+cli&gs_lcrp=EgZjaHJvbWUqDAgBECMYJxiABBiKBTIOCAAQRRgUGDkYhwIYgAQyDAgBECMYJxiABBiKBTIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIMCAgQABgUGIcCGIAEMgcICRAAGIAE0gEINjU4MWowajeoAgCwAgA&sourceid=chrome&ie=UTF-8
+
+https://spacelift.io/blog/argocd

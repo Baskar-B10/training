@@ -1,0 +1,167 @@
+Microsoft create multiple co pilots like git hub, outlook, windows co pilot
+
+GitHub says it's a world's first at-scale AI developer tool that can help you to write code faster with less work.
+
+Getting your code suggestions, or for advanced code completion. It supports multiple LLM like GPT -3.5, 4, 5
+https://docs.github.com/en/copilot/reference/ai-models/model-comparison
+
+extension or plugin needed in ID's or editor like Intellj
+
+
+Modern development:
+
+Accelerated Development
+Code quality
+leaning Aid (education tool)
+collaborative coding 
+multi-languages support
+
+
+Set up:
+Need account in GitHub and license 
+install IDE
+install GitHub plugin in IDE
+
+Modes:
+
+ASK mode - we can ask queries and if we provide context ,it provides response (similar to chatGPT)
+
+Edit mode - copilot can edit the code instead of copy paste. if we provide request it will made the changes.
+
+Agent Mode - recent and powerful one . its combo of ASK and edit mode. we provide request , it will make changes and review the work like developer.it can run on terminal 
+https://github.com/features/copilot/plans
+In IDE, chat panel , select the mode and LLM models
+
+Interacting with copilot:
+
+Inline suggestions: when we type code in IDE, copilot gives suggestion
+copilot chat: using chat box
+Inline Chat: chat enable while coding in IDE, context specific 
+comments to code: comments to code 
+
+write comments on class it converts to code
+ASK mode , we ask to explain the workspace
+
+select the snippet , it will add as context else it will take full class as context for any changes we need
+
+Prompt Engineering:
+
+how to give clear instruction to AI, we need to know prompt engineering
+
+process of crafting clear instruction to guide AI systems like copilot to generate context appropriate 
+
+ensures syntactically , functionally and contextually correct
+
+Principles:
+1.Single- ask one thing at a time to copilot
+2.specific- instruction should be clear and detailed
+3.short- specific brief but short. not to write story
+4.surround- descriptive file name like .csharp , .java , keep open relevant file
+
+Best Practices:
+1. Provide enough clarity
+2. provide enough context with details
+3. provide example for learning
+
+Techniques:
+1. zero-shot learning - no examples , just comment
+2. one-shot learning - single example given
+3. Few-shot learning - several example 
+
+To create new project :
+open ASK mode in copilot chat 
+type @workspace/new and provide the context like simple console application with tech details
+
+User prompt process flow:
+1.Secure prompt transmission and context gathering - send the details securely 
+2. Proxy-filter - like firewall , will detect any suspicious activity and block
+3. Toxicity-filter - repones will not provide response like personal information , address, id, hate speech , inappropriate content even if we provide it as context , it will filter out all that 
+4. code generation with LLM - LLM will generate code using context
+5. Post processing and response validation- again filter activated and check toxicity and remove and proxy will ensure code security
+6. suggestion delivery and feedback loop initiation- learn and improve from user suggestion
+7. repeat for subsequent prompts- ongoing interaction and response
+
+we can use copilot in git hub page also not only in editor
+
+commit message and description for pull request , also avail the copilot review in pull request
+
+
+Copilot for Backend development:
+ faster, cleaner and more consistent code by auto suggesting logic , API routes , database queries.
+
+1. generate API endpoints
+2. Database operations
+3. error handling and logging
+4. unit tests
+
+limitations on MySQL 
+https://learn.microsoft.com/en-us/sql/tools/visual-studio-code-extensions/github-copilot/limitations-and-known-issues?view=sql-server-ver17
+
+chat cheat sheet
+https://docs.github.com/en/copilot/reference/cheat-sheet
+
+
+Copilot for front end development:
+building UI components quickly
+suggesting html css layouts
+writing java script/typescripts logic
+integrating frontend frameworks
+generating form validations , event handlers 
+
+best practices:
+write clear comments or prompts
+review suggestions carefully
+use it to scaffold not finalize
+be specific in your code context
+
+what not to do:
+don't treat copilot as a source of truth - always verify logic and performance
+avoid using copilot for security-sensitive without close review
+don't rely on copilot to handling edge cases- handle them explicitly 
+
+
+Challenge 1: Build a User Login Form in React
+
+Task1: Initialize the sample folder structure for react application using Copilot
+
+Task2: Build the UI components for login form and User page.
+
+Task3: Add the validation for the Login form.
+
+Task4: Make UI customizations (eg: Theme update, background color change)
+
+Task5: Analyze and document code using GitHub Copilot
+
+Devops and CI/CD automation with copilot:
+1. copilot can setup IAC (Infrastructure as code) - install terraform plugin in IDE, ask agent for ARM template for deploying azure app service
+2. building yaml pipelines with copilot for building code , running tests , packaging and deploying
+
+
+design document using copilot:
+ helps write plantUML /mermaid code for sequence class , ER diagram
+generates schema definitions for ERD based designs
+
+Management and customization with copilot :
+
+explore plans and its features
+1. Management policies 
+2. security and privacy 
+3. plan selection consideration
+
+
+Ip Indemnity : intellectual  property protection , GitHub will take care of legal responses
+data protection agreement : formal agreement about data protection and compliance . so ensure data is protected.
+GitHub copilot trust center: hows it works including security , privacy compliance  and intellectual property safeguards.
+
+trust center: https://copilot.github.trust.page/
+
+manage content exclusions:
+1. configure content exclusion for repo
+	repo settings
+	exclusion paths
+2. configure content exclusion for organization
+	organization settings
+	exclusion details
+3. Impact of content exclusion
+	code completion 
+	chat responses 
