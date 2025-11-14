@@ -1,0 +1,258 @@
+GitHub Advanced & GitHub Actions
+
+Git : VCS , Tracking -application code
+
+git lifecycle: 
+workspace
+index/staging
+local repo
+
+gitIgnore - ignore the files not to get committed
+
+git pull - get latest code and also merge the changes into  local branch (fetch +merge)
+git fetch - get files from remote repo (new commits, branches , tags -locally)
+
+Branch :
+implement the features , its parallel development
+feature branch - short lived
+default branch - main , develop 
+In DevOps, new release - new branch 
+
+Idea behind feature - merge the pull request to review the code.
+different branches for different environment like DEV, QA, UAT and Prod
+
+Branch protection rule - certain rules like pull request before merge , approvals can be enabled
+
+git merge - merge changes from one branch to other, combines history
+Master - Commit A , B ,C
+Feature - commit  D E 
+merge will create new commit id as F
+git rebase - linearise the commit history , rewrites the history
+Master - Commit A , B ,C
+Feature - commit  D E 
+rebase will have linear A B C D E , no new commit id
+
+git cant auto resolve the conflicts , we need to resolve
+git rebase will linearize the commit
+git stash - temp repo 
+git rebase -I - interactive rebase 
+
+SAST - sonarQube and checkmarks
+
+DevOps - Supports CI/CD automation
+DevSecOps - Supports security scan automation tools like SonarQube, Dependabot alerts setup, CodeQL, CheckOv
+SRE - Supports to measure uptime, latency etc via Platform and monitoring - Grafana, K8s, Kong, OpsGenie/PagerDuty etc
+
+Developers -> GitHub -> SonarQube/Checkmarx -> Docker -> ACR/container registry -> Kubernetes->monitoring 
+Jenkins automates it
+
+7C - CI, CT, CD, CD, CM, CF, CI
+Jenkins needs separate server to do all automation process. needs storage and pays bill
+
+GitOps Platform - mange the infrastructure , deployment mostly for CI/CD CI- Helm charts - Kubernetes cluster - ArgoCd.
+
+Sync the changes in pods when we make changes.
+
+GitHub Action:
+
+Platform to automate the workflows like CI/CD
+7C -
+Continuous Integration 
+Continuous testing
+Continuous deployment
+Continuous deliver
+Continuous monitoring 
+Continuous feedback
+Continuous improvement
+
+why GitHub :
+
+we have github integration , everything at place one like code source and Ci/Cd 
+event driven - trigger the workflow like push, PR , issues updates and schedule 
+reusable Actions - GitHub marketplace or create custom 
+Multiplatform support - run workflow on different platform like windows, Linux and Mac or containers
+environment variables / secret management possible - store API keys , tokens , username and passwords  and inject them in workflows
+
+GitHub Action supports:
+CI pipeline - building docker image and maintain in ACR 
+CD pipeline- deploy using Argo CD  
+security scanning - vulnerability check like GoSec , Go Apps
+schedule task - cron jobs like daily reports, backup task , repeated task 
+notification and multiple cloud environment 
+
+
+developer write code -> push code to git hub repo ->scan vulnerabilities -> build docker image ->push images to  docker hub ACR -> deploy in AKS using manifest 
+
+here CI part taken in git hub actions and CD - we use Argo CD
+
+YAML:yet another markup language 
+configuration files - ansible , docker , docker compose file , Kubernetes - manifest file and gitHub Action
+uses key value and dictionary methods
+
+workflow - .gitHub/workflow/docker-ci.yaml
+
+syntax
+Job : collections of task needs to perform in pipeline
+Step: single task to execute commands/actions
+action: reusable i=unit of the code
+runners: run the workflow like Ubuntu VM
+
+Name: name for the actions
+run-name : like commit message name , PR message
+
+Event Trigger- below like trigger event on pushing code to master
+
+On:
+   push:
+	-master
+   pull_request:
+    branches: []
+   workfow_dispatch:
+   Inputs:
+     version:
+     description:
+     required: true
+Inputs will be provided to get trigger
+
+Docker: CLI platform , OS level initialization technique
+dockerFile - build docker image , ship to dev, test , uat and prod
+dockerfile - set of instruction to run inside the container (build , run )
+1. identify the base image of application
+2. setup workdir
+3. identify dependencies of application
+4. install depencies
+5. copy whole source code inside docker image
+6. expose over the internet
+7. how to run code inside
+
+From node:18-alphine - install node 18-alphine 
+workDIR /app - create app folder
+copy package.json /app/  copy <source> <desitaniation> copy all dependences from package.json to /app folder
+Run npm install
+copy . .
+Expose port
+CMD  ["node","server.js"] 
+
+create dockerfile and .gitHub/workflow/docker-image
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  build-and-push:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository 
+        uses: actions/checkout@v4
+
+      - name: Login to Hub.Docker.com
+        uses: docker/login-action@v3 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME}}  
+          password: ${{ secrets.DOCKERHUB_PASSWORD}}
+
+      - name: Set Up Docker BuildX 
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image 
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile 
+          push: true 
+          tags: muralisocial123/ust-test-image:v1.1.0  
+
+     
+secret details stored in repo under settings > secrets , we use in yaml file as {{ name}}
+
+reference file:https://github.com/Baskar-B10/UST-Git-GitHub-Actions
+did demo:
+https://github.com/Baskar-B10/Transaction-History/blob/main/.github/workflows/docker-image.yml
+  https://github.com/Baskar-B10/Transaction-History/actions
+https://hub.docker.com/repository/docker/boss10/ust-test-image/tags
+
+namespace/repoName
+ variables used across yaml file will kept under env
+
+use AWS to store docker images using ECR 
+Step 1: Create an ECR Repository in AWS
+
+Log in to the AWS Management Console
+.
+
+Navigate to ECR → Repositories → Create repository.
+
+Give it a name (e.g., my-app) and leave other settings as default.
+
+Click Create repository.
+
+Note the repository URI, e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app.
+
+Step 2: Create an IAM User with ECR Permissions
+
+Go to IAM → Users → Add user.
+
+Give it a username (e.g., github-actions-ecr) and select Programmatic access.
+
+Attach a policy with ECR permissions:
+
+Either AmazonEC2ContainerRegistryFullAccess (simpler)
+
+Or create a custom policy allowing ecr:GetAuthorizationToken, ecr:BatchCheckLayerAvailability, ecr:PutImage, ecr:InitiateLayerUpload, ecr:UploadLayerPart, ecr:CompleteLayerUpload.
+
+After creating the user, note down the Access Key ID and Secret Access Key.
+
+Step 3: Store AWS Credentials in GitHub Secrets
+
+Go to your GitHub repository → Settings → Secrets and variables → Actions → New repository secret.
+
+Add these secrets:
+
+AWS_ACCESS_KEY_ID → the Access Key ID from step 2
+
+AWS_SECRET_ACCESS_KEY → the Secret Access Key from step 2
+
+AWS_REGION → e.g., us-east-1
+
+ECR_REPOSITORY → your repository URI from step 1 (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app)
+
+Step 4: Create GitHub Actions Workflow
+
+In your repository, go to Actions → New workflow → Set up a workflow yourself.
+
+Create a YAML file .github/workflows/docker-publish.yml:
+https://github.com/Baskar-B10/UST-Git-GitHub-Actions/blob/master/image-pushing-ecr.yml
+
+
+configure EC2 instance to take image from ECR to deploy the image.
+
+sonar cloud is open source free for code quality check
+
+configure SonarQube for code quality
+
+self healing, auto scaling, communication needed in containerization
+
+orchestration tool:
+kuberneetes -opensource
+redHat openShift
+nomad
+Apache mesos
+
+helm for package manager in kuberneetes 
+
+configure Argocd using the command
+
+K8s- microservice - deployments - replicaset-pods -service
+
+ArgoCd: continuous delivery process
+automate deployment of kuberneetes application
+
+context - current cluster context 
+
+
